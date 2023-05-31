@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Product List</h1>
+
+
+<ul>
+    {% for product in products %}
+        <li>
+            <a href="{% url 'mainapp:detail' product.id %}">{{product.name}} </a>
+            -- {{product.total_price}}
+            <br>
+            {% if product.description %}
+                {{product.description}}
+            {% else %}
+                No description
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}
+
+
+
+{% block content %}
+<h1>Welcome to Django</h1>
+<br>
+
+{% include "products/include.html" %}
+
+{% endblock %}
