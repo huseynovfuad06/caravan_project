@@ -1,7 +1,8 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.db.models import F, FloatField
 from django.db.models.functions import Coalesce
 from .models import Product
+from .forms import ProductForm
 
 # Create your views here.
 
@@ -64,3 +65,48 @@ def product_detail_view(request, id):
         "product": product
     }
     return render(request, "products/detail.html", context)
+
+
+
+def product_create_view(request):
+    form = ProductForm()
+
+
+    if request.method == "POST":
+        form = ProductForm(request.POST)
+
+        if form.is_valid():
+            new_product = form.save()
+
+            new_product.discount_price = 0
+            new_product.save()
+
+            return redirect("mainapp:list")
+
+    context = {
+        "form": form
+    }
+    return render(request, "products/create.html", context)
+
+
+
+
+def product_update_view(request, id):
+    product = get_object_or_404(Product, id=id)
+    form = ProductForm(instance=product)
+
+    if request.method == "POST":
+        form = ProductForm(request.POST, instance=product)
+
+        if form.is_valid():
+            new_product = form.save()
+
+            # new_product.discount_price = 0
+            # new_product.save()
+
+            return redirect("mainapp:list")
+
+    context = {
+        "form": form
+    }
+    return render(request, "products/update.html", context)
