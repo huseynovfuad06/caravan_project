@@ -121,3 +121,11 @@ def product_update_view(request, id):
         "form": form
     }
     return render(request, "products/update.html", context)
+
+
+
+
+# def product_delete_view(request, id):
+#     product = get_object_or_404(Product, id=id)
+#     product.delete()
+#     return redirect("products:list")
