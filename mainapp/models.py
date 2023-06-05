@@ -1,4 +1,5 @@
 from django.db import models
+from .validators import validate_timestamp
 
 # Create your models here.
 
@@ -9,6 +10,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
+    timestamp = models.DateField(blank=True, null=True, validators=[validate_timestamp])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

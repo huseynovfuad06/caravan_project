@@ -76,9 +76,20 @@ def product_create_view(request):
         form = ProductForm(request.POST)
 
         if form.is_valid():
-            new_product = form.save()
+            new_product = form.save(commit=False)
 
-            new_product.discount_price = 0
+            # price = form.cleaned_data.get("price")
+            # discount_price = form.cleaned_data.get("discount_price")
+            #
+            # total_price = price - (discount_price or 0)
+            #
+            # new_product.total_price = total_price
+            """
+            if commit=True --> Model.objects.create(...)
+            if commit=False --> Model(...)
+            """
+
+            # new_product.discount_price = 0
             new_product.save()
 
             return redirect("mainapp:list")
