@@ -1,20 +1,24 @@
 {% extends "base.html" %}
+{% load numberformat %}
 
 {% block body %}
 <h1>Product List</h1>
 
 
 <ul>
-    {% for product in products %}
+    {% for product in products|slice:"3:" %}
         <li>
-            <a href="{% url 'mainapp:detail' product.id %}">{{product.name}} </a>
-            -- {{product.total_price}}
+            <a href="{% url 'mainapp:detail' product.id %}">{{product.name|title|show_title:10}} </a>
+            -- {{product.total_price|formatize }}
             <br>
             {% if product.description %}
-                {{product.description}}
+                {{ product.description|safe|truncatechars:150 }}
             {% else %}
                 No description
             {% endif %}
+
+            <p>{{ product.created_at|date:"d.m.Y H:m" }}</p>
+            <p>{{ product.created_at|timesince }}</p>
         </li>
     {% endfor %}
 </ul>

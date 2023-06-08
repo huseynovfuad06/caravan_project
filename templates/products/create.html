@@ -50,9 +50,12 @@
     {% for field in form %}
     <div class="form-group">
         <label>{{ field.label }}</label>
+        <br>
         {{ field }}
     </div>
     {% endfor %}
+
+    {{form.media}}
 
     <button class="btn btn-success">Submit</button>
 

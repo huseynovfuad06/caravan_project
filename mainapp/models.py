@@ -1,5 +1,6 @@
 from django.db import models
 from .validators import validate_timestamp
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -7,7 +8,7 @@ from .validators import validate_timestamp
 
 class Product(models.Model):
     name = models.CharField(max_length=300)
-    description = models.TextField(blank=True, null=True)
+    description = RichTextField(blank=True, null=True)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
     timestamp = models.DateField(blank=True, null=True, validators=[validate_timestamp])
