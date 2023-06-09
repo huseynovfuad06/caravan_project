@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% load numberformat %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="/myproject/static/list.css">
+    <link rel="stylesheet" href="/myproject/static/list.css">
+    <link rel="stylesheet" href="{% static 'mainapp/products.css' %}">
+{% endblock %}
 
 {% block body %}
 <h1>Product List</h1>
