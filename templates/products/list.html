@@ -8,8 +8,14 @@
 <ul>
     {% for product in products|slice:"3:" %}
         <li>
-            <a href="{% url 'mainapp:detail' product.id %}">{{product.name|title|show_title:10}} </a>
-            -- {{product.total_price|formatize }}
+            <a href="{% url 'mainapp:detail' product.id %}">
+                {% if forloop.counter|divisibleby:2 %}
+                    {{ forloop.counter }} **)
+                {% else %}
+                    {{ forloop.counter }} *)
+                {% endif %}
+                {{product.name|title|show_title:10}} </a>
+            -- {{product.total_price }}
             <br>
             {% if product.description %}
                 {{ product.description|safe|truncatechars:150 }}
