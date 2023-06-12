@@ -44,6 +44,8 @@ def detail_view(request, product_id, coders_id):
 
 
 def product_list_view(request):
+    print(request.user)
+    print(request.user.is_authenticated)
     products = Product.objects.annotate(
         discount=Coalesce("discount_price", 0, output_field=FloatField()),
         total_price=F("price") - F("discount")

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # project apps
     "mainapp",
+    "accounts",
 
     # third party apps
     "ckeditor",
