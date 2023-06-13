@@ -29,6 +29,15 @@
 <!--    {{ form.as_p }}-->
 
     <div class="error-box">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                              {{ message|escape }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% if form.errors %}
             <div class="error-message mb-4">
                 {% for field in form %}

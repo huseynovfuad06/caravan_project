@@ -40,6 +40,7 @@ class LoginForm(forms.ModelForm, FormControl):
 
 
 class RegisterForm(forms.ModelForm, FormControl):
+    password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
         model = User
         fields = ("username", "password", "email", "first_name", "last_name")
@@ -60,6 +61,7 @@ class RegisterForm(forms.ModelForm, FormControl):
 
     def save(self, commit=True):
         password = self.cleaned_data.pop("password")
+        self.cleaned_data["is_active"] = False
 
         if commit:
             user = User.objects.create(**self.cleaned_data)
