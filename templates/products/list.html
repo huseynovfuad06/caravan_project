@@ -13,7 +13,7 @@
 
 
 <ul>
-    {% for product in products|slice:"3:" %}
+    {% for product in products %}
         <li>
             <a href="{% url 'mainapp:detail' product.id %}">
                 {% if forloop.counter|divisibleby:2 %}
