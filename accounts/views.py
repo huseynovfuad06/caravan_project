@@ -7,14 +7,17 @@ from django.utils.encoding import smart_str, smart_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib import messages
 from django.conf import settings
+from .decorators import check_user_login
 
 
 User = get_user_model()
 
 
-
+@check_user_login
 def login_view(request):
     form = LoginForm()
+    print("GET request: ", request.GET)
+    next = request.GET.get("next")
 
     if request.method == "POST":
         form = LoginForm(request.POST or None)
@@ -25,6 +28,9 @@ def login_view(request):
 
             login(request, user)
 
+
+            if next:
+                return redirect(next)
             return redirect("/")
 
     context = {

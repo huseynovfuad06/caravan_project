@@ -3,6 +3,7 @@ from django.db.models import F, FloatField
 from django.db.models.functions import Coalesce
 from .models import Product
 from .forms import ProductForm, ProductCreateForm
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -69,7 +70,7 @@ def product_detail_view(request, id):
     return render(request, "products/detail.html", context)
 
 
-
+@login_required(login_url='/accounts/login/')
 def product_create_view(request):
     form = ProductForm()
 
