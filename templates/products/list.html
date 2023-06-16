@@ -12,7 +12,33 @@
 <h1>Product List</h1>
 
 
-<ul>
+<div class="row">
+    <form>
+        <div class="col-4">
+            <label>Product Name</label>
+            <input type="text" class="form-control" name="product_name"
+                   placeholder="Product Name"
+            {% if filter_dict.name %}value="{{ filter_dict.name }}" {% endif %}>
+        </div>
+        <div class="col-5">
+            <label>Price</label>
+            <div class="row">
+                <input type="number" class="form-control col-5" name="min_price"
+                       placeholder="Min-price"
+                {% if filter_dict.min_price %}value="{{ filter_dict.min_price }}" {% endif %}>
+                <p class="col-2"></p>
+                <input type="number" class="form-control col-5" name="max_price"
+                       placeholder="Max-price"
+                {% if filter_dict.max_price %}value="{{ filter_dict.max_price }}" {% endif %}>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+
+
+<ul class="mt-4">
     {% for product in products %}
         <li>
             <a href="{% url 'mainapp:detail' product.id %}">

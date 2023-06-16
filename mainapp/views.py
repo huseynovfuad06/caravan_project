@@ -4,6 +4,8 @@ from django.db.models.functions import Coalesce
 from .models import Product
 from .forms import ProductForm, ProductCreateForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from .filters import ProductFilter
 
 # Create your views here.
 
@@ -49,8 +51,39 @@ def product_list_view(request):
         discount=Coalesce("discount_price", 0, output_field=FloatField()),
         total_price=F("price") - F("discount")
     )
+
+    filter_class = ProductFilter()
+    products = filter_class.filter_products(products, request.GET)
+
+    # name = request.GET.get("product_name", None)
+    # min_price = request.GET.get("min_price", None)
+    # max_price = request.GET.get("max_price", None)
+    #
+    # filter_dict = {
+    #     "name": name,
+    #     "min_price": min_price,
+    #     "max_price": max_price
+    # }
+    # product_filter = Q()
+    #
+    # if name:
+    #     # products = products.filter(name__icontains=name)
+    #     product_filter.add(Q(name__icontains=name), Q.AND)
+    # if min_price:
+    #     # products = products.filter(total_price__gte=min_price)
+    #     product_filter.add(Q(total_price__gte=min_price), Q.AND)
+    # if max_price:
+    #     # products = products.filter(total_price__lte=max_price)
+    #     product_filter.add(Q(total_price__lte=max_price), Q.AND)
+
+
+    products = products.filter(
+        product_filter
+    )
+
     context = {
-        "products": products
+        "products": products.order_by("total_price"),
+        "filter_dict": filter_dict
     }
     return render(request, "products/list.html", context)
 
