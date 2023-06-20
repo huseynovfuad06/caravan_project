@@ -6,6 +6,7 @@ from .forms import ProductForm, ProductCreateForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .filters import ProductFilter
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -77,13 +78,17 @@ def product_list_view(request):
     #     product_filter.add(Q(total_price__lte=max_price), Q.AND)
 
 
-    products = products.filter(
-        product_filter
-    )
+    # products = products.filter(
+    #     product_filter
+    # )
+
+    paginator = Paginator(products.order_by("total_price"),2)
+    page = request.GET.get('page', 1)
+    product_list = paginator.get_page(page)
 
     context = {
-        "products": products.order_by("total_price"),
-        "filter_dict": filter_dict
+        "products": product_list,
+        # "filter_dict": filter_dict
     }
     return render(request, "products/list.html", context)
 

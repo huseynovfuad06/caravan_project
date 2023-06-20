@@ -18,10 +18,11 @@ class ProductFilter:
             #         data[elem]
             #     )
             # )
-            result_filter.add(
-                self.FILTERSET[elem](
-                    data[elem]
-                ), Q.AND
-            )
+            if elem in self.FILTERSET.keys() and data[elem]:
+                result_filter.add(
+                    self.FILTERSET[elem](
+                        data[elem]
+                    ), Q.AND
+                )
 
         return products.filter(result_filter)

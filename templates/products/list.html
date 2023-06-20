@@ -3,9 +3,9 @@
 {% load static %}
 
 {% block css %}
-    <link rel="stylesheet" href="/myproject/static/list.css">
-    <link rel="stylesheet" href="/myproject/static/list.css">
-    <link rel="stylesheet" href="{% static 'mainapp/products.css' %}">
+<link rel="stylesheet" href="/myproject/static/list.css">
+<link rel="stylesheet" href="/myproject/static/list.css">
+<link rel="stylesheet" href="{% static 'mainapp/products.css' %}">
 {% endblock %}
 
 {% block body %}
@@ -18,18 +18,18 @@
             <label>Product Name</label>
             <input type="text" class="form-control" name="product_name"
                    placeholder="Product Name"
-            {% if filter_dict.name %}value="{{ filter_dict.name }}" {% endif %}>
+                   {% if filter_dict.name %}value="{{ filter_dict.name }}" {% endif %}>
         </div>
         <div class="col-5">
             <label>Price</label>
             <div class="row">
                 <input type="number" class="form-control col-5" name="min_price"
                        placeholder="Min-price"
-                {% if filter_dict.min_price %}value="{{ filter_dict.min_price }}" {% endif %}>
+                       {% if filter_dict.min_price %}value="{{ filter_dict.min_price }}" {% endif %}>
                 <p class="col-2"></p>
                 <input type="number" class="form-control col-5" name="max_price"
                        placeholder="Max-price"
-                {% if filter_dict.max_price %}value="{{ filter_dict.max_price }}" {% endif %}>
+                       {% if filter_dict.max_price %}value="{{ filter_dict.max_price }}" {% endif %}>
             </div>
         </div>
 
@@ -40,31 +40,50 @@
 
 <ul class="mt-4">
     {% for product in products %}
-        <li>
-            <a href="{% url 'mainapp:detail' product.id %}">
-                {% if forloop.counter|divisibleby:2 %}
-                    {{ forloop.counter }} **)
-                {% else %}
-                    {{ forloop.counter }} *)
-                {% endif %}
-                {{product.name|title|show_title:10}} </a>
-            -- {{product.total_price }}
-            <br>
-            {% if product.description %}
-                {{ product.description|safe|truncatechars:150 }}
+    <li>
+        <a href="{% url 'mainapp:detail' product.id %}">
+            {% if forloop.counter|divisibleby:2 %}
+            {{ forloop.counter }} **)
             {% else %}
-                No description
+            {{ forloop.counter }} *)
             {% endif %}
+            {{product.name|title|show_title:10}} </a>
+        -- {{product.total_price }}
+        <br>
+        {% if product.description %}
+        {{ product.description|safe|truncatechars:150 }}
+        {% else %}
+        No description
+        {% endif %}
 
-            <p>{{ product.created_at|date:"d.m.Y H:m" }}</p>
-            <p>{{ product.created_at|timesince }}</p>
-        </li>
+        <p>{{ product.created_at|date:"d.m.Y H:m" }}</p>
+        <p>{{ product.created_at|timesince }}</p>
+    </li>
     {% endfor %}
 </ul>
 
 
-{% endblock %}
+{% if products.paginator.num_pages > 1 %}
+<nav aria-label="...">
+    <ul class="pagination">
+        {% if products.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="page={{ products.previous_page_number }}" tabindex="-1">Previous</a>
+        </li>
+        {% endif %}
+        {% for i in products.paginator.page_range %}
+        <li class="page-item {% if products.number == i %}active{% endif %}"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+        {% endfor %}
+        {% if products.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{products.next_page_number}}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 
+{% endblock %}
 
 
 {% block content %}
