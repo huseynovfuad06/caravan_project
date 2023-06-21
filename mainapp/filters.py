@@ -12,6 +12,7 @@ class ProductFilter:
 
     def filter_products(self, products, data):
         result_filter = Q()
+        filter_dict = {}
         for elem in data:
             # products = products.filter(
             #     self.FILTERSET[elem](
@@ -24,5 +25,6 @@ class ProductFilter:
                         data[elem]
                     ), Q.AND
                 )
+                filter_dict[elem] = data[elem]
 
-        return products.filter(result_filter)
+        return products.filter(result_filter), filter_dict

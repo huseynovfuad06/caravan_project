@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.db.models import F, FloatField
 from django.db.models.functions import Coalesce
 from .models import Product
-from .forms import ProductForm, ProductCreateForm
+from .forms import ProductForm, ProductCreateForm, ProductImageForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .filters import ProductFilter
@@ -54,7 +54,7 @@ def product_list_view(request):
     )
 
     filter_class = ProductFilter()
-    products = filter_class.filter_products(products, request.GET)
+    products, filter_dict = filter_class.filter_products(products, request.GET)
 
     # name = request.GET.get("product_name", None)
     # min_price = request.GET.get("min_price", None)
@@ -86,9 +86,11 @@ def product_list_view(request):
     page = request.GET.get('page', 1)
     product_list = paginator.get_page(page)
 
+    print(filter_dict)
+
     context = {
         "products": product_list,
-        # "filter_dict": filter_dict
+        "filter_dict": filter_dict
     }
     return render(request, "products/list.html", context)
 
@@ -184,3 +186,42 @@ def product_create_add_view(request):
         "form": form
     }
     return render(request, "products/create.html", context)
+
+
+
+def create_product_image(request):
+    form = ProductImageForm()
+
+    if request.method == "POST":
+        form = ProductImageForm(request.POST or None, request.FILES or None)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect("mainapp:list")
+
+
+    context = {
+        "form": form
+    }
+    return render(request, "products/image/create.html", context)
+
+
+
+from django.http import JsonResponse
+def wish_product_view(request):
+    print(request.POST)
+    product = get_object_or_404(Product, id=int(request.POST.get("id")))
+    success = False
+
+    if request.user in product.wishlist.all():
+        product.wishlist.remove(request.user)
+    else:
+        product.wishlist.add(request.user)
+        success = True
+
+    data = {
+        "text": "Hello World",
+        "success": success
+    }
+    return JsonResponse(data)

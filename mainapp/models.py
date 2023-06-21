@@ -1,9 +1,12 @@
 from django.db import models
 from .validators import validate_timestamp
 from ckeditor.fields import RichTextField
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 
+
+User = get_user_model()
 
 
 class Product(models.Model):
@@ -14,6 +17,7 @@ class Product(models.Model):
     timestamp = models.DateField(blank=True, null=True, validators=[validate_timestamp])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    wishlist = models.ManyToManyField(User, blank=True)
 
     def __str__(self):
         return self.name
@@ -28,3 +32,4 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return self.product.name
+

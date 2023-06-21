@@ -13,12 +13,13 @@
 
 
 <div class="row">
+    {% csrf_token %}
     <form>
         <div class="col-4">
             <label>Product Name</label>
             <input type="text" class="form-control" name="product_name"
                    placeholder="Product Name"
-                   {% if filter_dict.name %}value="{{ filter_dict.name }}" {% endif %}>
+                   {% if filter_dict.product_name %}value="{{ filter_dict.product_name }}" {% endif %}>
         </div>
         <div class="col-5">
             <label>Price</label>
@@ -48,7 +49,12 @@
             {{ forloop.counter }} *)
             {% endif %}
             {{product.name|title|show_title:10}} </a>
-        -- {{product.total_price }}
+        -- {{product.total_price }} --
+        {% if request.user in product.wishlist.all %}
+            <p id="wish-{{product.id}}" onclick="wishProduct('{{product.id}}')" style="cursor: pointer;">Var</p>
+        {% else %}
+            <p id="wish-{{product.id}}" onclick="wishProduct('{{product.id}}')" style="cursor:pointer;">Yox</p>
+        {% endif %}
         <br>
         {% if product.description %}
         {{ product.description|safe|truncatechars:150 }}
@@ -68,15 +74,16 @@
     <ul class="pagination">
         {% if products.has_previous %}
         <li class="page-item">
-            <a class="page-link" href="page={{ products.previous_page_number }}" tabindex="-1">Previous</a>
+            <a class="page-link" href="?page={{ products.previous_page_number }}&{% for key, val in filter_dict.items %}{{key}}={{val}}&{% endfor %}" tabindex="-1">Previous</a>
         </li>
         {% endif %}
         {% for i in products.paginator.page_range %}
-        <li class="page-item {% if products.number == i %}active{% endif %}"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+        <li class="page-item {% if products.number == i %}active{% endif %}">
+            <a class="page-link" href="?page={{i}}&{% for key, val in filter_dict.items %}{{key}}={{val}}&{% endfor %}">{{i}}</a></li>
         {% endfor %}
         {% if products.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{products.next_page_number}}">Next</a>
+            <a class="page-link" href="?page={{products.next_page_number}}&{% for key, val in filter_dict.items %}{{key}}={{val}}&{% endfor %}">Next</a>
         </li>
         {% endif %}
     </ul>
@@ -92,4 +99,47 @@
 
 {% include "products/include.html" %}
 
+{% endblock %}
+
+
+
+{% block js %}
+
+<script>
+    const wish_url = '{% url "mainapp:wish" %}'
+    console.log(wish_url)
+
+    function wishProduct(id){
+        console.log(id)
+
+            var myHeaders = new Headers()
+            myHeaders.append('X-CSRFToken', document.querySelector('[name=csrfmiddlewaretoken]').value)
+            var formData = new FormData()
+
+            formData.append('id', id)
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: formData,
+                redirect: 'follow',
+            };
+
+            response = fetch(wish_url, requestOptions)
+                .then(function (response) {
+
+                    if (response.ok) {
+                        response.json().then((data) => {
+                        var elem = document.getElementById("wish-"+id)
+                        if(data.success){
+                            elem.innerHTML = "Var"
+                        }else{
+                            elem.innerHTML = "Yox"
+                        }
+
+                        })
+                    }
+                })
+    }
+</script>
 {% endblock %}
